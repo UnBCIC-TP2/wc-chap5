@@ -12,8 +12,8 @@ scalaVersion := "2.12.4"
 
 // It's possible to define many kinds of settings, such as:
 
-name := "hello-world"
-organization := "ch.epfl.scala"
+name := "Word Count"
+organization := "br.unb.cic"
 version := "1.0"
 
 // Note, it's not required for you to define these three settings. These are
@@ -73,3 +73,6 @@ libraryDependencies += "org.typelevel" %% "cats-core" % "1.0.1"
 // To learn more about multi-project builds, head over to the official sbt
 // documentation at http://www.scala-sbt.org/documentation.html
 
+libraryDependencies ++= Seq(
+   "org.backuity.clist" %% "clist-core"   % "3.3.0",
+   "org.backuity.clist" %% "clist-macros" % "3.3.0" % "provided")
