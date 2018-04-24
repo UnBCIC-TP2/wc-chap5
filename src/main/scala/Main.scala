@@ -17,9 +17,3 @@ object MainProgram extends CliMain[Unit] (
     println(fw) 
   }
 }
-
-
-// object Main extends App {
-//   val w = (frequentWords(5) compose wordCount compose allWords compose readLines)("/Users/rbonifacio/tmp/frankstein.txt")
-//   println(w) 
-// }
