@@ -11,7 +11,7 @@ import com.monovore.decline._
   * Dado um 'path' para um arquivo, lê as linhas do arquivo e as
   * retorna como uma lista de strings. 
   */  
-def readLines(path: String) = Source.fromFile(path).getLines.toList
+def readFile(path: String) = Source.fromFile(path).getLines.toList
 
 /**
   * Dada uma String, com potencialmente algumas palavras, realiza o
@@ -19,13 +19,13 @@ def readLines(path: String) = Source.fromFile(path).getLines.toList
   * substitui todos os caracteres não-alpha pela string vazia e converte
   * cada palavra para 'lower case' 
   */ 
-def strWords(str: String) = str.split(" ").toList.map(s => s.replaceAll("[^a-zA-Z]", "").toLowerCase())
+def filterChars(str: String) = str.split(" ").toList.map(s => s.replaceAll("[^a-zA-Z]", "").toLowerCase())
 
 /**
   * Dada uma lista com as linhas de um arquivo, onde cada linha
   * eh uma String, retorna uma lista com todas as palavras. 
   */
-def allWords(lst: List[String]) = lst.flatMap(s => strWords(s))
+def scan(lst: List[String]) = lst.flatMap(s => filterChars(s))
 
 /**
   * Retorna verdadeiro se 'word' for um stopWord. 
@@ -41,7 +41,7 @@ def removeStopWords(words : List[String]) = words.filter(w => ! isStopWord(w) &&
   * Dada uma lista de palavras, conta a frequencia com que elas
   * ocorrem na lista. Retorna um Mapa de String (palavra) para Int (frequencia). 
   */ 
-def wordCount(words: List[String]) = {
+def frequencies(words: List[String]) = {
   val res = new HashMap[String, Int]()
   words.foreach(w => res += w -> (res.getOrElse(w, 0) + 1))
   res
@@ -50,7 +50,7 @@ def wordCount(words: List[String]) = {
 /**
   * Retorna as 'n' palavras mais frequentes. 
   */ 
-def frequentWords(n: Int)(map: HashMap[String, Int]) = ListMap(map.toSeq.sortWith(_._2 > _._2):_*).take(n)
+def sortAndTake(n: Int)(map: HashMap[String, Int]) = ListMap(map.toSeq.sortWith(_._2 > _._2):_*).take(n)
 
 object MainProgram extends CommandApp(
   name="Word Count",
@@ -60,7 +60,7 @@ object MainProgram extends CommandApp(
     val sizeOpt  = Opts.option[Int]("words", short = "n", metavar = "count", help = "Set number of most frequent words to print.")
 
     (inputOpt, sizeOpt).mapN { (input, size) => 
-      val fw = (frequentWords(size) compose wordCount compose removeStopWords compose allWords compose readLines)(input)
+      val fw = (sortAndTake(size) compose frequencies compose removeStopWords compose scan compose readFile)(input)
       println(fw)
     }
   }
